@@ -27,6 +27,22 @@ router.post('/questions', (req, res, next) => {
       }
       next(err);
     });
-  });
+});
+
+router.delete('/questions/:id', (req, res, next) => {
+  const { id } = req.params;
+
+  Question.findOneAndRemove({ _id: id })
+    .then(result => {
+      if (result) {
+        res.status(204).end();
+      } else {
+        next();
+      }
+    })
+    .catch(err => {
+      next(err);
+    });
+});
 
 module.exports = router;
