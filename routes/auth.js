@@ -22,7 +22,7 @@ function createAuthToken (user) {
 const options = {session: false, failWithError: true};
 
 router.post('/users', (req, res) => {
-  let {username, password, name} = req.body;
+  let {username, password, firstName, lastName} = req.body;
 
   username = username.trim();
   password = password.trim();
@@ -46,7 +46,8 @@ router.post('/users', (req, res) => {
       return User.create({
         username,
         password: digest,
-        name
+        firstName,
+        lastName
       });
     })
     .then(user => res.status(201).json(user))
@@ -61,6 +62,7 @@ router.post('/users', (req, res) => {
 const localAuth = passport.authenticate('local', options);
 
 router.post('/login', localAuth, function (req, res) {
+  console.log(req.user);
   const authToken = createAuthToken(req.user);
   return res.json({ authToken });
 });
