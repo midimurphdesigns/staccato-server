@@ -13,6 +13,7 @@ const { dbConnect } = require('./db-mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const authRouter = require('./routes/auth');
+const questionRouter = require('./routes/question');
 const localStrategy = require('./passport/local');
 const jwtStrategy = require('./passport/jwt');
 
@@ -40,6 +41,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.use('/auth/', authRouter);
+
+app.use('/api/', questionRouter);
 
 function runServer(port = PORT) {
   const server = app
