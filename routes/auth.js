@@ -22,7 +22,7 @@ function createAuthToken (user) {
 const options = {session: false, failWithError: true};
 
 router.post('/users', (req, res) => {
-  let {username, password} = req.body;
+  let {username, password, name} = req.body;
 
   username = username.trim();
   password = password.trim();
@@ -45,7 +45,8 @@ router.post('/users', (req, res) => {
     .then(digest => {
       return User.create({
         username,
-        password: digest
+        password: digest,
+        name
       });
     })
     .then(user => res.status(201).json(user))
