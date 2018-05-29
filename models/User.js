@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const bcrypt = require('bcryptjs');
 
-const list = require('../logic/spacedRep');
+const list = require('../logic/sLinkedList');
 
 const userSchema = new mongoose.Schema({
   username: { type: String, unique: true},

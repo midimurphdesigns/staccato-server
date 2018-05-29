@@ -14,7 +14,7 @@ const { JWT_SECRET, JWT_EXPIRY } = config;
 
 const User = require('../models/User');
 
-const list = require('../logic/spacedRep');
+const list = require('../logic/sLinkedList');
 
 function createAuthToken (user) {
   return jwt.sign({ user }, JWT_SECRET, {
@@ -50,16 +50,16 @@ router.post('/users', (req, res) => {
     })
     .then(digest => {
       let qList = new list();
-      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+      qList.insertFirst({question:"Question #1",answer:"cdefgab"});
+      qList.insertFirst({question:"Question #2",answer:"cdefgab"});
+      qList.insertFirst({question:"Question #3",answer:"cdefgab"});
+      qList.insertFirst({question:"Question #4",answer:"cdefgab"});
+      qList.insertFirst({question:"Question #5",answer:"cdefgab"});
+      qList.insertFirst({question:"Question #6",answer:"cdefgab"});
+      qList.insertFirst({question:"Question #7",answer:"cdefgab"});
+      qList.insertFirst({question:"Question #8",answer:"cdefgab"});
+      qList.insertFirst({question:"Question #9",answer:"cdefgab"});
+      qList.insertFirst({question:"Question #10",answer:"cdefgab"});
       return User.create({
         username,
         password: digest,
