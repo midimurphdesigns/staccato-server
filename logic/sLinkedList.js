@@ -12,7 +12,7 @@ class LinkedList {
     this.head = null;
   }
 
-  insertFirst(item){
+  insertFirst(item) {
     this.head = new _Node(item, this.head);
   }
 
