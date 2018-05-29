@@ -33,6 +33,8 @@ router.post('/users', (req, res) => {
   username = username.trim();
   password = password.trim();
 
+  console.log('got here');
+
   return User.find({username})
     .count()
     .then(count => {
