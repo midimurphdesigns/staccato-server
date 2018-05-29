@@ -13,7 +13,7 @@ const config = require('../config');
 const { JWT_SECRET, JWT_EXPIRY } = config;
 
 const User = require('../models/User');
-const list = require('../logic/sLinkedList');
+const Question = require('../models/Question');
 
 function createAuthToken (user) {
   return jwt.sign({ user }, JWT_SECRET, {
@@ -49,27 +49,29 @@ router.post('/users', (req, res) => {
       }
       return User.hashPassword(password);
     })
-    .then(digest => {
-      let qList = new list();
-      qList.insertLast({question:"Question #1",answer:"cdefgab"});
-      qList.insertLast({question:"Question #2",answer:"cdefgab"});
-      qList.insertLast({question:"Question #3",answer:"cdefgab"});
-      qList.insertLast({question:"Question #4",answer:"cdefgab"});
-      qList.insertLast({question:"Question #5",answer:"cdefgab"});
-      qList.insertLast({question:"Question #6",answer:"cdefgab"});
-      qList.insertLast({question:"Question #7",answer:"cdefgab"});
-      qList.insertLast({question:"Question #8",answer:"cdefgab"});
-      qList.insertLast({question:"Question #9",answer:"cdefgab"});
-      qList.insertLast({question:"Question #10",answer:"cdefgab"});
-      return User.create({
+    .then(hash => {
+      console.log(hash);
+      return new User({
         username,
-        password: digest,
-        firstName,
-        lastName,
-        qList,
+        password: hash
       });
     })
-    .then(user => res.status(201).json(user))
+    .then(user => Question.find().then(questions => ({user, questions})))
+    .then(({user, questions}) => {
+      console.log(user, questions);
+      user.questions = questions.map((question, index) => ({
+        _id: question._id,
+        question: question.question,
+        answer: question.answer,
+        memoryStrength: 1,
+        next: index === questions.length - 1 ? null : index + 1
+      }));
+      return user.save();
+    })
+    .then(user => {
+      console.log('USER',user);
+      return res.status(201).json(user);
+    })
     .catch(err => {
       if (err.reason === 'ValidationError') {
         return res.status(err.code).json(err);
@@ -94,3 +96,24 @@ router.post('/refresh', jwtAuth, (req, res) => {
 });
 
 module.exports = router;
+
+// let qList = new list();
+//       qList.insertLast({question:"Question #1",answer:"cdefgab"});
+//       qList.insertLast({question:"Question #2",answer:"cdefgab"});
+//       qList.insertLast({question:"Question #3",answer:"cdefgab"});
+//       qList.insertLast({question:"Question #4",answer:"cdefgab"});
+//       qList.insertLast({question:"Question #5",answer:"cdefgab"});
+//       qList.insertLast({question:"Question #6",answer:"cdefgab"});
+//       qList.insertLast({question:"Question #7",answer:"cdefgab"});
+//       qList.insertLast({question:"Question #8",answer:"cdefgab"});
+//       qList.insertLast({question:"Question #9",answer:"cdefgab"});
+//       qList.insertLast({question:"Question #10",answer:"cdefgab"});
+//       return User.create({
+//         username,
+//         password: digest,
+//         firstName,
+//         lastName,
+//         qList,
+//       });
+//     })
+//     .then(user => res.status(201).json(user))

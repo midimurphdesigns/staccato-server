@@ -42,9 +42,10 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
-app.use('/auth/', authRouter);
-app.use('/api/', questionRouter);
-app.use('/users/', userRouter);
+app.use('/auth', authRouter);
+app.use('/api', questionRouter);
+
+app.use('/users', userRouter);
 
 function runServer(port = PORT) {
   const server = app

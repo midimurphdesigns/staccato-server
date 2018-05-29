@@ -4,21 +4,28 @@ const mongoose = require('mongoose');
 
 const bcrypt = require('bcryptjs');
 
-const list = require('../logic/sLinkedList');
-
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, requred: true },
   firstName: { type: String },
   lastName: { type: String },
-  qList: { type: String },
-  qObj: {
-    head: { type: Object, default: null },
-    next: { type: Object, default: null },
-    answered: { type: Boolean },
-    correct: { type: Number, default: 0 },
-    incorrect: { type: Number, default: 0 }
+  score: {
+    type: Number,
+    default: 0
   },
+  questions: [
+    {
+      _id: mongoose.Schema.Types.ObjectId,
+      question: String,
+      answer: String,
+      memoryStrength: Number,
+      next: Number
+    }
+  ],
+  head: {
+    type: Number,
+    default: 0
+  }
 });
 
 userSchema.set('toObject', {
@@ -39,25 +46,3 @@ userSchema.statics.hashPassword = function (password) {
 };
 
 module.exports = mongoose.model('User', userSchema);
-
-const userSchema = new mongoose.Schema({
-  fullName: { type: String },
-  username: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  // data(ques itself) - img & ans && next pointer
-  userQuestionList: { type: Object, default: questions },
-  questionsObj: {
-    questionHead: { type: Object, default: null },
-    questionNext: { type: Object, default: null },
-    answered: { type: Boolean },
-    correct: { type: Number, default: 0 },
-    incorrect: { type: Number, default: 0 }
-  }
-});

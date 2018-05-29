@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const List = require('../logic/sLinkedList');
 
+const passport = require('passport');
+
 const User = require('../models/User');
 
 router.get('/', (req, res, err) => {
@@ -29,16 +31,15 @@ router.get('/:id', (req, res, next) => {
     });
 });
 
-router.get('/:id/next', (req, res, next) => {
-  const { id } = req.params;
-  User.findOne({ _id: id })
+const jwtAuth = passport.authenticate('jwt', {session:false});
+
+router.get('/next/:id', (req, res, next) => {
+  console.log('USER',req.user);
+
+  User.findById(req.params.id)
     .then(result => {
-      // result.qList.insertAt(result.qList.head.n, result.qList.head)
-      // result.qList.head = result.qList.head.next;
-      // let currNode = result.qList.next.value;
       if (result) {
-        result.viewList.head = result.viewList.head.next
-        res.status(200).json(result.viewList.head);
+        res.status(200).json(result.questions[result.head]);
       }
       else {
         next();
@@ -47,6 +48,7 @@ router.get('/:id/next', (req, res, next) => {
     .catch(err => {
       next(err);
     });
+  User.findByIdAndUpdate(req.params.id, {$inc: {'head':1}}, {upsert:true});
 });
 
 module.exports = router;
