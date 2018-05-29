@@ -22,9 +22,26 @@ router.post('/questions', (req, res, next) => {
     })
     .catch(err => {
       if (err) {
-        err = new Error('There\'s an error')
+        err = new Error('There\'s an error');
         err.status = 400;
       }
+      next(err);
+    });
+});
+
+router.get('/questions/:id', (req, res, next) => {
+  const { id } = req.params;
+
+  Question.findOne({ _id: id })
+    .then(result => {
+      if (result) {
+        res.status(200).json(result);
+      }
+      else {
+        next();
+      }
+    })
+    .catch(err => {
       next(err);
     });
 });
