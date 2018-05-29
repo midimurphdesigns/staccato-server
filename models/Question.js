@@ -6,6 +6,8 @@ const questionSchema = new mongoose.Schema({
   answer: { type: String, required: true }
 });
 
+// add weight to schema
+
 mongoose.set('toObject', {
   transform: function (doc, ret) {
     ret.id = ret._id;

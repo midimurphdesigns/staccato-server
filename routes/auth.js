@@ -8,6 +8,8 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 
+//const baseQuestions = require('../assets/questions.json');
+
 const { JWT_SECRET, JWT_EXPIRY } = config;
 
 const User = require('../models/User');
@@ -24,18 +26,10 @@ function createAuthToken (user) {
 const options = {session: false, failWithError: true};
 
 router.post('/users', (req, res) => {
-  let qList = new list();
+
+  // global list, move into specific user
   let {username, password, firstName, lastName} = req.body;
-  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
-  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+  
   username = username.trim();
   password = password.trim();
 
@@ -55,6 +49,17 @@ router.post('/users', (req, res) => {
       return User.hashPassword(password);
     })
     .then(digest => {
+      let qList = new list();
+      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+      qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
       return User.create({
         username,
         password: digest,
