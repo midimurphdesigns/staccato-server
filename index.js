@@ -8,12 +8,14 @@ const morgan = require('morgan');
 
 const { PORT, CLIENT_ORIGIN } = require('./config');
 const { dbConnect } = require('./db-mongoose');
-// const {dbConnect} = require('./db-knex');
 
 const bodyParser = require('body-parser');
 const passport = require('passport');
+
 const authRouter = require('./routes/auth');
 const questionRouter = require('./routes/question');
+const userRouter = require('./routes/user');
+
 const localStrategy = require('./passport/local');
 const jwtStrategy = require('./passport/jwt');
 
@@ -41,8 +43,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.use('/auth/', authRouter);
-
 app.use('/api/', questionRouter);
+app.use('/user/', userRouter);
 
 function runServer(port = PORT) {
   const server = app
