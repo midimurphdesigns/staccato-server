@@ -4,11 +4,14 @@ const mongoose = require('mongoose');
 
 const bcrypt = require('bcryptjs');
 
+const list = require('../logic/spacedRep');
+
 const userSchema = new mongoose.Schema({
   username: { type: String, unique: true},
   password: { type: String, requred: true},
   firstName: { type: String },
-  lastName: { type: String }
+  lastName: { type: String },
+  qList: { type: Object }
 });
 
 userSchema.set('toObject', {

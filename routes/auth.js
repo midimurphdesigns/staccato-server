@@ -12,6 +12,8 @@ const { JWT_SECRET, JWT_EXPIRY } = config;
 
 const User = require('../models/User');
 
+const list = require('../logic/spacedRep');
+
 function createAuthToken (user) {
   return jwt.sign({ user }, JWT_SECRET, {
     subject: user.username,
@@ -22,8 +24,18 @@ function createAuthToken (user) {
 const options = {session: false, failWithError: true};
 
 router.post('/users', (req, res) => {
+  let qList = new list();
   let {username, password, firstName, lastName} = req.body;
-
+  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
+  qList.insertFirst({question:"What are the 7 fundamental notes (disregarding sharp / flat)",answer:"cdefgab"});
   username = username.trim();
   password = password.trim();
 
@@ -47,7 +59,8 @@ router.post('/users', (req, res) => {
         username,
         password: digest,
         firstName,
-        lastName
+        lastName,
+        qList
       });
     })
     .then(user => res.status(201).json(user))
