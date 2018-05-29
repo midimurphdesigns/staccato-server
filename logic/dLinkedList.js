@@ -62,4 +62,4 @@ class DLinkedList {
   }
 }  
 
-module.exports = LinkedList;
+module.exports = DLinkedList;
