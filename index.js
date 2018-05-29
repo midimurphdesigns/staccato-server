@@ -44,7 +44,7 @@ app.use(bodyParser.json());
 
 app.use('/auth/', authRouter);
 app.use('/api/', questionRouter);
-app.use('/user/', userRouter);
+app.use('/users/', userRouter);
 
 function runServer(port = PORT) {
   const server = app
