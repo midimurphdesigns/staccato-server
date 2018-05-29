@@ -5,13 +5,15 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const list = require('../logic/sLinkedList');
+const dLinkedList = require('../logic/dLinkedList');
 
 const userSchema = new mongoose.Schema({
   username: { type: String, unique: true},
   password: { type: String, requred: true},
   firstName: { type: String },
   lastName: { type: String },
-  qList: { type: Object }
+  qList: { type: Object },
+  viewList: { type: Object }
 });
 
 userSchema.set('toObject', {

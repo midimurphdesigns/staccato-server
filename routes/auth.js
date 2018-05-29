@@ -13,8 +13,8 @@ const config = require('../config');
 const { JWT_SECRET, JWT_EXPIRY } = config;
 
 const User = require('../models/User');
-
 const list = require('../logic/sLinkedList');
+const dList = require('../logic/dLinkedList');
 
 function createAuthToken (user) {
   return jwt.sign({ user }, JWT_SECRET, {
@@ -60,12 +60,25 @@ router.post('/users', (req, res) => {
       qList.insertFirst({question:"Question #8",answer:"cdefgab"});
       qList.insertFirst({question:"Question #9",answer:"cdefgab"});
       qList.insertFirst({question:"Question #10",answer:"cdefgab"});
+
+      let viewList = new dList();
+      viewList.insertFirst({question:"Question #1",answer:"cdefgab"});
+      viewList.insertFirst({question:"Question #2",answer:"cdefgab"});
+      viewList.insertFirst({question:"Question #3",answer:"cdefgab"});
+      viewList.insertFirst({question:"Question #4",answer:"cdefgab"});
+      viewList.insertFirst({question:"Question #5",answer:"cdefgab"});
+      viewList.insertFirst({question:"Question #6",answer:"cdefgab"});
+      viewList.insertFirst({question:"Question #7",answer:"cdefgab"});
+      viewList.insertFirst({question:"Question #8",answer:"cdefgab"});
+      viewList.insertFirst({question:"Question #9",answer:"cdefgab"});
+      viewList.insertFirst({question:"Question #10",answer:"cdefgab"});
       return User.create({
         username,
         password: digest,
         firstName,
         lastName,
-        qList
+        qList,
+        viewList
       });
     })
     .then(user => res.status(201).json(user))

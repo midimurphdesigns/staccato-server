@@ -33,11 +33,12 @@ router.get('/:id/next', (req, res, next) => {
   const { id } = req.params;
   User.findOne({ _id: id })
     .then(result => {
-      result.qList.insertAt(result.qList.head.n, result.qList.head)
+      // result.qList.insertAt(result.qList.head.n, result.qList.head)
       // result.qList.head = result.qList.head.next;
-      let currNode = result.qList.next.value;
+      // let currNode = result.qList.next.value;
       if (result) {
-        res.status(200).json(currNode);
+        result.viewList.head = result.viewList.head.next
+        res.status(200).json(result.viewList.head);
       }
       else {
         next();
