@@ -52,28 +52,29 @@ router.post('/users', (req, res) => {
     })
     .then(digest => {
       let qList = new list();
-      qList.insertFirst({question:"Question #1",answer:"cdefgab"});
-      qList.insertFirst({question:"Question #2",answer:"cdefgab"});
-      qList.insertFirst({question:"Question #3",answer:"cdefgab"});
-      qList.insertFirst({question:"Question #4",answer:"cdefgab"});
-      qList.insertFirst({question:"Question #5",answer:"cdefgab"});
-      qList.insertFirst({question:"Question #6",answer:"cdefgab"});
-      qList.insertFirst({question:"Question #7",answer:"cdefgab"});
-      qList.insertFirst({question:"Question #8",answer:"cdefgab"});
-      qList.insertFirst({question:"Question #9",answer:"cdefgab"});
-      qList.insertFirst({question:"Question #10",answer:"cdefgab"});
+      qList.insertLast({question:"Question #1",answer:"cdefgab"});
+      qList.insertLast({question:"Question #2",answer:"cdefgab"});
+      qList.insertLast({question:"Question #3",answer:"cdefgab"});
+      qList.insertLast({question:"Question #4",answer:"cdefgab"});
+      qList.insertLast({question:"Question #5",answer:"cdefgab"});
+      qList.insertLast({question:"Question #6",answer:"cdefgab"});
+      qList.insertLast({question:"Question #7",answer:"cdefgab"});
+      qList.insertLast({question:"Question #8",answer:"cdefgab"});
+      qList.insertLast({question:"Question #9",answer:"cdefgab"});
+      qList.insertLast({question:"Question #10",answer:"cdefgab"});
 
       let viewList = new dList();
-      viewList.insertFirst({question:"Question #1",answer:"cdefgab"});
-      viewList.insertFirst({question:"Question #2",answer:"cdefgab"});
-      viewList.insertFirst({question:"Question #3",answer:"cdefgab"});
-      viewList.insertFirst({question:"Question #4",answer:"cdefgab"});
-      viewList.insertFirst({question:"Question #5",answer:"cdefgab"});
-      viewList.insertFirst({question:"Question #6",answer:"cdefgab"});
-      viewList.insertFirst({question:"Question #7",answer:"cdefgab"});
-      viewList.insertFirst({question:"Question #8",answer:"cdefgab"});
-      viewList.insertFirst({question:"Question #9",answer:"cdefgab"});
-      viewList.insertFirst({question:"Question #10",answer:"cdefgab"});
+      viewList.insertLast({question:"Question #1",answer:"cdefgab"});
+      viewList.insertLast({question:"Question #2",answer:"cdefgab"});
+      viewList.insertLast({question:"Question #3",answer:"cdefgab"});
+      viewList.insertLast({question:"Question #4",answer:"cdefgab"});
+      viewList.insertLast({question:"Question #5",answer:"cdefgab"});
+      viewList.insertLast({question:"Question #6",answer:"cdefgab"});
+      viewList.insertLast({question:"Question #7",answer:"cdefgab"});
+      viewList.insertLast({question:"Question #8",answer:"cdefgab"});
+      viewList.insertLast({question:"Question #9",answer:"cdefgab"});
+      viewList.insertLast({question:"Question #10",answer:"cdefgab"});
+      console.log('GOT HERE', viewList);
       return User.create({
         username,
         password: digest,
