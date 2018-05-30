@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, requred: true },
   firstName: { type: String },
   lastName: { type: String },
-  score: {
+  total: {
     type: Number,
     default: 0
   },
