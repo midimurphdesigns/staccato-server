@@ -28,7 +28,7 @@ router.post('/users', (req, res) => {
 
   // global list, move into specific user
   let {username, password, firstName, lastName} = req.body;
-  
+  console.log('BODY',req.body);
   username = username.trim();
   password = password.trim();
 
