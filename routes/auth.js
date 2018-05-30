@@ -28,7 +28,7 @@ router.post('/users', (req, res) => {
 
   // global list, move into specific user
   let {username, password, firstName, lastName} = req.body;
-  
+  console.log('BODY',req.body);
   username = username.trim();
   password = password.trim();
 
@@ -60,7 +60,6 @@ router.post('/users', (req, res) => {
     })
     .then(user => Question.find().then(questions => ({user, questions})))
     .then(({user, questions}) => {
-      console.log(user, questions);
       user.questions = questions.map((question, index) => ({
         _id: question._id,
         question: question.question,
@@ -71,7 +70,6 @@ router.post('/users', (req, res) => {
       return user.save();
     })
     .then(user => {
-      console.log('USER',user);
       return res.status(201).json(user);
     })
     .catch(err => {
@@ -85,7 +83,6 @@ router.post('/users', (req, res) => {
 const localAuth = passport.authenticate('local', options);
 
 router.post('/login', localAuth, function (req, res) {
-  console.log(req.user);
   const authToken = createAuthToken(req.user);
   return res.json({ authToken });
 });
