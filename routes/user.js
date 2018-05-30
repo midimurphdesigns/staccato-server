@@ -19,7 +19,7 @@ const jwtAuth = passport.authenticate('jwt', {session:false});
 
 router.get('/next', jwtAuth, (req, res, next) => {
   console.log('USER',req.user);
-  User.findByIdAndUpdate(req.user.id, {$inc:{ head: 1 }}).exec()
+  User.findByIdAndUpdate(req.user.id, {$inc:{ head: 1 }}, { new: true }).exec()
     .then(result => {
       if (result) {
         res.status(200).json(result.questions[result.head]);
