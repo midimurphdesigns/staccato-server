@@ -53,7 +53,9 @@ router.post('/users', (req, res) => {
       console.log(hash);
       return new User({
         username,
-        password: hash
+        password: hash,
+        firstName,
+        lastName
       });
     })
     .then(user => Question.find().then(questions => ({user, questions})))
@@ -96,24 +98,3 @@ router.post('/refresh', jwtAuth, (req, res) => {
 });
 
 module.exports = router;
-
-// let qList = new list();
-//       qList.insertLast({question:"Question #1",answer:"cdefgab"});
-//       qList.insertLast({question:"Question #2",answer:"cdefgab"});
-//       qList.insertLast({question:"Question #3",answer:"cdefgab"});
-//       qList.insertLast({question:"Question #4",answer:"cdefgab"});
-//       qList.insertLast({question:"Question #5",answer:"cdefgab"});
-//       qList.insertLast({question:"Question #6",answer:"cdefgab"});
-//       qList.insertLast({question:"Question #7",answer:"cdefgab"});
-//       qList.insertLast({question:"Question #8",answer:"cdefgab"});
-//       qList.insertLast({question:"Question #9",answer:"cdefgab"});
-//       qList.insertLast({question:"Question #10",answer:"cdefgab"});
-//       return User.create({
-//         username,
-//         password: digest,
-//         firstName,
-//         lastName,
-//         qList,
-//       });
-//     })
-//     .then(user => res.status(201).json(user))
