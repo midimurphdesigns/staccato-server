@@ -18,7 +18,6 @@ router.get('/', (req, res, err) => {
 const jwtAuth = passport.authenticate('jwt', {session:false});
 
 router.post('/next', jwtAuth, (req, res, next) => {
-  console.log(req.body);
   //console.log('USER',req.user);
 
   // point the questions.next to head, set this last on to cycle from back to front
@@ -30,11 +29,18 @@ router.post('/next', jwtAuth, (req, res, next) => {
         return User.findByIdAndUpdate(req.user.id, {$set:{ head: 0 }}, { new: true }).exec();
       }
       else {
-        return User.findByIdAndUpdate(req.user.id, {$inc:{ head: 1 }}, { new: true }).exec();
+        // if user answers true, continue in the list
+        // extended functionality - space out answer by 2 * m
+        if (req.body.userInput) {
+          return User.findByIdAndUpdate(req.user.id, {$inc:{ head: 1 }}, { new: true }).exec();
+        }
+        // if user answers false, ask the question again
+        else return User.findById(req.user.id);
       }
     })
     .then(result => {
       console.log('RESULT', result);
+      console.log(req.body);
       if (result) {
         res.status(200).json(result.questions[result.head]);
       }
