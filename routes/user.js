@@ -26,16 +26,18 @@ router.post('/next', jwtAuth, (req, res, next) => {
   User.findById(req.user.id)
     .then(result => {
       if (result.head >= (result.questions.length-1)) {
-        return User.findByIdAndUpdate(req.user.id, {$set:{ head: 0 }}, { new: true }).exec();
+        if (req.body.userInput) {
+          return User.findByIdAndUpdate(req.user.id, {$set:{ head: 0 }}, {$inc:{ qCorrect: 1, qTotal: 1 }}, { new: true }).exec();
+        }
       }
       else {
         // if user answers true, continue in the list
         // extended functionality - space out answer by 2 * m
         if (req.body.userInput) {
-          return User.findByIdAndUpdate(req.user.id, {$inc:{ head: 1 }}, { new: true }).exec();
+          return User.findByIdAndUpdate(req.user.id, {$inc:{ head: 1, qCorrect: 1, qTotal: 1 }}, { new: true }).exec();
         }
         // if user answers false, ask the question again
-        else return User.findById(req.user.id);
+        else return User.findByIdAndUpdate(req.user.id, {$inc:{ qTotal: 1 }});
       }
     })
     .then(result => {

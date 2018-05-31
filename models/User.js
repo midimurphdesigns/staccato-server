@@ -9,7 +9,11 @@ const userSchema = new mongoose.Schema({
   password: { type: String, requred: true },
   firstName: { type: String },
   lastName: { type: String },
-  total: {
+  qCorrect: {
+    type: Number,
+    default: 0
+  },
+  qTotal: {
     type: Number,
     default: 0
   },
