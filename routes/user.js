@@ -20,14 +20,18 @@ const jwtAuth = passport.authenticate('jwt', {session:false});
 router.post('/next', jwtAuth, (req, res, next) => {
   //console.log('USER',req.user);
 
-  // point the questions.next to head, set this last on to cycle from back to front
-  // User.updateOne({_id: req.user.id}, {"questions.next" : null}, {$set: { "questions.$.next": {$inc: { head: 1 }}}}).exec()
   console.log('Qs',req.user.questions.length, 'head', req.user.head);
   User.findById(req.user.id)
     .then(result => {
+      console.log('HEAD',result.head, 'Q LIST LEN',result.questions.length-1);
       if (result.head >= (result.questions.length-1)) {
+        console.log('head matched');
         if (req.body.userInput) {
+          console.log('correct answer...');
           return User.findByIdAndUpdate(req.user.id, {$set:{ head: 0 }}, {$inc:{ qCorrect: 1, qTotal: 1 }}, { new: true }).exec();
+        }
+        else {
+          return User.findByIdAndUpdate(req.user.id, {$inc:{ qTotal: 1 }}, { new: true }).exec();
         }
       }
       else {
@@ -37,7 +41,7 @@ router.post('/next', jwtAuth, (req, res, next) => {
           return User.findByIdAndUpdate(req.user.id, {$inc:{ head: 1, qCorrect: 1, qTotal: 1 }}, { new: true }).exec();
         }
         // if user answers false, ask the question again
-        else return User.findByIdAndUpdate(req.user.id, {$inc:{ qTotal: 1 }});
+        else return User.findByIdAndUpdate(req.user.id, {$inc:{ qTotal: 1 }}).exec();
       }
     })
     .then(result => {
@@ -53,46 +57,39 @@ router.post('/next', jwtAuth, (req, res, next) => {
     .catch(err => {
       next(err);
     });
-  // if (req.user.head >= (req.user.questions.length-1)) {
-  //   console.log('got here');
-  //   User.findByIdAndUpdate(req.user.id, {$set:{ head: 0 }}, { new: true }).exec()
-  //     .then(result => {
-  //       console.log('RESULT', result);
-  //       if (result) {
-  //         res.status(200).json(result.questions[result.head]);
-  //       }
-  //       else {
-  //         next();
-  //       }
-  //     })
-  //     .catch(err => {
-  //       next(err);
-  //     });
-  // }
-  // else {
-  //   console.log('ELSE');
-  //   User.findByIdAndUpdate(req.user.id, {$inc:{ head: 1 }}, { new: true }).exec()
-  //     .then(result => {
-  //       console.log('RESULT', result);
-  //       if (result) {
-  //         res.status(200).json(result.questions[result.head]);
-  //       }
-  //       else {
-  //         next();
-  //       }
-  //     })
-  //     .catch(err => {
-  //       next(err);
-  //     });
-  // }
 });
 
-router.get('/:id', (req, res, next) => {
-  const { id } = req.params;
-  User.findOne({ _id: id })
+router.get('/first', jwtAuth, (req, res, next) => {
+  
+  console.log('Qs',req.user.questions.length, 'head', req.user.head);
+  User.findById(req.user.id)
+    .then(result => {
+      if (result.head >= (result.questions.length-1)) {
+        return User.findByIdAndUpdate(req.user.id, {$set:{ head: 0 }}, { new: true }).exec();
+      }
+      else {
+        // if user answers false, ask the question again
+        return User.findById(req.user.id);
+      }
+    })
     .then(result => {
       if (result) {
-        res.status(200).json(result);
+        res.status(200).json(result.questions[result.head]);
+      }
+      else {
+        next();
+      }
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+router.get('/history', jwtAuth, (req, res, next) => {
+  User.findOne({ _id: req.user.id })
+    .then(result => {
+      if (result) {
+        res.status(200).json({qTotal:result.qTotal, qCorrect:result.qCorrect});
       }
       else {
         next();
