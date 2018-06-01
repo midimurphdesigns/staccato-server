@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const questionSchema = new mongoose.Schema({
   question: { type: String, required: true },
   answer: { type: String, required: true },
-  weight: { type: Number, default: 0}
+  weight: { type: Number, default: 1}
 });
 
 // add weight to schema
