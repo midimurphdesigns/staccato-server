@@ -19,11 +19,7 @@ router.get('/', (req, res, err) => {
 const jwtAuth = passport.authenticate('jwt', {session:false});
 
 router.post('/next', jwtAuth, (req, res, next) => {
-  //console.log('USER',req.user);
 
-  // point the questions.next to head, set this last on to cycle from back to front
-  // User.updateOne({_id: req.user.id}, {"questions.next" : null}, {$set: { "questions.$.next": {$inc: { head: 1 }}}}).exec()
-  console.log('Qs',req.user.questions.length, 'head', req.user.head);
   User.findById(req.user.id)
     .then(result => {
       //copy user's questions into a linked list
@@ -48,8 +44,6 @@ router.post('/next', jwtAuth, (req, res, next) => {
       return newList.head.value;
     })
     .then(result => {
-      console.log('RESULT', result);
-      console.log(req.body);
       if (result) {
         res.status(200).json(result);
       }
