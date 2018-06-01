@@ -26,63 +26,30 @@ router.post('/next', jwtAuth, (req, res, next) => {
   console.log('Qs',req.user.questions.length, 'head', req.user.head);
   User.findById(req.user.id)
     .then(result => {
+      //copy user's questions into a linked list
+      let newList = new List();
       let node = result.questions.head;
-      let answer = req.body.userInput;
-      let m = node.value.weight;
-      if (answer) {
-        m = m*2;
+      while (node) {
+        newList.insertLast(node.value);
+        node = node.next;
+      }
+      if (req.body.userInput == true) {
+        newList.swapHeadWithTail();
       }
       else {
-        m = 1;
+        newList.insertAt(2, newList.head.value);
+        newList.head = newList.head.next;
       }
-      result.questions.head.value.weight = m;
-      // if m > len just send to the back
-      let i = 0;
-      let count = 0;
-      while ( (i < m-1)) {
-        if (node.next) {
-          node = node.next;
-          i++;
-          count++;
-        }
-        i++;
+      let increment = 0;
+      if (req.body.userInput == true) {
+        increment = 1;
       }
-      if (!node.next) {
-        node.next = result.questions.head;
-        node.next.next = null;
-      }
-      else {
-        let temp = node.next;
-        node.next = result.questions.head;
-        node.next.next = temp;
-        let runner = result.questions.head;
-        let holder = [];
-        eval('result.questions.head'+'.next'.repeat(count).next+ '= node');
-        console.log('NEXTS', node);
-      }
-      console.log('node', node);
-      User.findByIdAndUpdate(req.user.id, {$set: {"questions.head":result.questions.head}}, {new: true}).exec();
-      return node;
+      User.findByIdAndUpdate(req.user.id, {$set: {"questions":newList}, $inc: {qTotal:1, qCorrect:increment}}, {new: true}).exec();
+      return newList.head.value;
     })
     .then(result => {
       console.log('RESULT', result);
       console.log(req.body);
-      if (result) {
-        res.status(200).json(result.value);
-      }
-      else {
-        next();
-      }
-    })
-    .catch(err => {
-      next(err);
-    });
-});
-
-router.get('/:id', (req, res, next) => {
-  const { id } = req.params;
-  User.findOne({ _id: id })
-    .then(result => {
       if (result) {
         res.status(200).json(result);
       }
@@ -93,8 +60,31 @@ router.get('/:id', (req, res, next) => {
     .catch(err => {
       next(err);
     });
-  // double the increment if userInput is true
-  // set to 1 if false
+});
+
+router.get('/first', jwtAuth, (req, res, next) => {
+  User.findById(req.user.id)
+    .then(result => {
+      res.status(200).json(result.questions.head.value);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+router.get('/history', jwtAuth, (req, res, next) => {
+  User.findOne({ _id: req.user.id })
+    .then(result => {
+      if (result) {
+        res.status(200).json({qTotal:result.qTotal, qCorrect:result.qCorrect});
+      }
+      else {
+        next();
+      }
+    })
+    .catch(err => {
+      next(err);
+    });
 });
 
 module.exports = router;
