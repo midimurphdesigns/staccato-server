@@ -17,18 +17,8 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  questions: [
-    {
-      _id: mongoose.Schema.Types.ObjectId,
-      question: String,
-      answer: String,
-      memoryStrength: Number,
-      next: Number
-    }
-  ],
-  head: {
-    type: Number,
-    default: 0
+  questions: {
+    type: Object
   }
 });
 

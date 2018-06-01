@@ -7,6 +7,7 @@ const passport = require('passport');
 
 const User = require('../models/User');
 
+
 router.get('/', (req, res, err) => {
   User.find()
     .then(result => {
@@ -21,32 +22,33 @@ router.post('/next', jwtAuth, (req, res, next) => {
 
   User.findById(req.user.id)
     .then(result => {
-      if (result.head >= (result.questions.length-1)) {
-        // last question in list
-        if (req.body.userInput) {
-          //correct answer - reset the head
-          return User.findByIdAndUpdate(req.user.id, {$set:{ head: 0 }, $inc:{ qCorrect: 1, qTotal: 1 }}, { upsert: true }).exec((err, document) => {
-            res.status(201).json(result.questions[result.head]);
-          });
-        }
-        else {
-          //wrong answer - keep head the same
-          return User.findByIdAndUpdate(req.user.id, {$inc:{ qTotal: 1 }}, { new: true }).exec((err, document) => {
-            res.status(201).json(result.questions[result.head]);
-          });
-        }
+      //copy user's questions into a linked list
+      let newList = new List();
+      let node = result.questions.head;
+      while (node) {
+        newList.insertLast(node.value);
+        node = node.next;
+      }
+      if (req.body.userInput == true) {
+        newList.swapHeadWithTail();
       }
       else {
-        // if user answers true, and we're not on the end, continue in the list
-        if (req.body.userInput) {
-          return User.findByIdAndUpdate(req.user.id, {$inc:{ head: 1, qCorrect: 1, qTotal: 1 }}, { new: true }).exec((err, document) => {
-            res.status(201).json(result.questions[result.head]);
-          });
-        }
-        // if user answers false, ask the question again
-        else return User.findByIdAndUpdate(req.user.id, {$inc:{ qTotal: 1 }}).exec((err, document) => {
-          res.status(201).json(result.questions[result.head]);
-        });
+        newList.insertAt(2, newList.head.value);
+        newList.head = newList.head.next;
+      }
+      let increment = 0;
+      if (req.body.userInput == true) {
+        increment = 1;
+      }
+      User.findByIdAndUpdate(req.user.id, {$set: {"questions":newList}, $inc: {qTotal:1, qCorrect:increment}}, {new: true}).exec();
+      return newList.head.value;
+    })
+    .then(result => {
+      if (result) {
+        res.status(200).json(result);
+      }
+      else {
+        next();
       }
     })
     .catch(err => {
@@ -57,21 +59,7 @@ router.post('/next', jwtAuth, (req, res, next) => {
 router.get('/first', jwtAuth, (req, res, next) => {
   User.findById(req.user.id)
     .then(result => {
-      if (result.head >= (result.questions.length-1)) {
-        return User.findByIdAndUpdate(req.user.id, {$set:{ head: 0 }}, { new: true }).exec();
-      }
-      else {
-        // if user answers false, ask the question again
-        return User.findById(req.user.id);
-      }
-    })
-    .then(result => {
-      if (result) {
-        res.status(200).json(result.questions[result.head]);
-      }
-      else {
-        next();
-      }
+      res.status(200).json(result.questions.head.value);
     })
     .catch(err => {
       next(err);
@@ -91,8 +79,6 @@ router.get('/history', jwtAuth, (req, res, next) => {
     .catch(err => {
       next(err);
     });
-  // double the increment if userInput is true
-  // set to 1 if false
 });
 
 module.exports = router;

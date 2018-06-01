@@ -8,6 +8,8 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 
+const singly = require('../logic/sLinkedList');
+
 //const baseQuestions = require('../assets/questions.json');
 
 const { JWT_SECRET, JWT_EXPIRY } = config;
@@ -51,25 +53,24 @@ router.post('/users', (req, res) => {
     })
     .then(hash => {
       console.log(hash);
-      return new User({
-        username,
-        password: hash,
-        firstName,
-        lastName
-      });
-    })
-    .then(user => Question.find().then(questions => ({user, questions})))
-    .then(({user, questions}) => {
-      user.questions = questions.map((question, index) => ({
-        _id: question._id,
-        question: question.question,
-        answer: question.answer,
-        memoryStrength: 1,
-        next: index === questions.length - 1 ? null : index + 1
-      }));
-      return user.save();
+      return Question.find().then(questions => {
+        let qList = new singly();
+        questions.forEach(q => qList.insertLast(q));
+        console.log(qList);
+        return qList;
+      })
+        .then((qList) => {
+          return new User({
+            username,
+            password: hash,
+            firstName,
+            lastName,
+            questions:qList
+          });
+        });
     })
     .then(user => {
+      user.save();
       return res.status(201).json(user);
     })
     .catch(err => {
