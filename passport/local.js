@@ -8,6 +8,7 @@ const localStrategy = new LocalStrategy((username, password, done) => {
   let user;
   User.findOne({ username })
     .then(results => {
+      console.log(results);
       user = results;
       //user doesnt exist
       if (!user) {
