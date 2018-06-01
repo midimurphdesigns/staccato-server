@@ -21,39 +21,30 @@ router.post('/next', jwtAuth, (req, res, next) => {
 
   User.findById(req.user.id)
     .then(result => {
-      console.log('HEAD',result.head, 'Q LIST LEN',result.questions.length-1);
       if (result.head >= (result.questions.length-1)) {
-        console.log('head matched');
+        // last question in list
         if (req.body.userInput) {
-          console.log('correct answer...');
+          //correct answer - reset the head
           return User.findByIdAndUpdate(req.user.id, {$set:{ head: 0 }, $inc:{ qCorrect: 1, qTotal: 1 }}, { upsert: true }).exec((err, document) => {
-            if (err) {console.log('error from mongoose');}
-            console.log('res-->a',document.questions[document.head]);
             res.status(201).json(result.questions[result.head]);
           });
         }
         else {
+          //wrong answer - keep head the same
           return User.findByIdAndUpdate(req.user.id, {$inc:{ qTotal: 1 }}, { new: true }).exec((err, document) => {
-            if (err) console.log('error from mongoose');
-            console.log('res-->b',document.questions[document.head]);
             res.status(201).json(result.questions[result.head]);
           });
         }
       }
       else {
-        // if user answers true, continue in the list
-        // extended functionality - space out answer by 2 * m
+        // if user answers true, and we're not on the end, continue in the list
         if (req.body.userInput) {
           return User.findByIdAndUpdate(req.user.id, {$inc:{ head: 1, qCorrect: 1, qTotal: 1 }}, { new: true }).exec((err, document) => {
-            if (err) console.log('error from mongoose');
-            console.log('res-->c',document.questions[document.head]);
             res.status(201).json(result.questions[result.head]);
           });
         }
         // if user answers false, ask the question again
         else return User.findByIdAndUpdate(req.user.id, {$inc:{ qTotal: 1 }}).exec((err, document) => {
-          if (err) console.log('error from mongoose');
-          console.log('res-->d',document.questions[document.head]);
           res.status(201).json(result.questions[result.head]);
         });
       }
