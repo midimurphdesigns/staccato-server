@@ -70,6 +70,7 @@ router.post('/users', (req, res) => {
         });
     })
     .then(user => {
+      user.save();
       return res.status(201).json(user);
     })
     .catch(err => {
