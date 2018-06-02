@@ -1,12 +1,11 @@
 'use strict';
 const express = require('express');
 const router = express.Router();
-const List = require('../logic/sLinkedList');
+const {LinkedList, size} = require('../logic/sLinkedList');
 
 const passport = require('passport');
 
 const User = require('../models/User');
-
 
 router.get('/', (req, res, err) => {
   User.find()
@@ -19,37 +18,39 @@ router.get('/', (req, res, err) => {
 const jwtAuth = passport.authenticate('jwt', {session:false});
 
 router.post('/next', jwtAuth, (req, res, next) => {
-  //console.log('USER',req.user);
-
-  // point the questions.next to head, set this last on to cycle from back to front
-  // User.updateOne({_id: req.user.id}, {"questions.next" : null}, {$set: { "questions.$.next": {$inc: { head: 1 }}}}).exec()
-  console.log('Qs',req.user.questions.length, 'head', req.user.head);
   User.findById(req.user.id)
     .then(result => {
       //copy user's questions into a linked list
-      let newList = new List();
+      let newList = new LinkedList();
       let node = result.questions.head;
+      let increment = 0;
+      // fill the linked list
       while (node) {
         newList.insertLast(node.value);
         node = node.next;
       }
-      if (req.body.userInput == true) {
-        newList.swapHeadWithTail();
+      let m = newList.head.value.weight;
+      if (req.body.userInput === true) {
+        m = m*2;
+        newList.head.value.weight = m;
+        increment = 1;
+        if (m > size(newList)) {
+          newList.swapHeadWithTail();
+        }
+        else {
+          newList.insertAt(m, newList.head.value);
+          newList.head = newList.head.next;
+        }
       }
       else {
+        newList.head.value.weight = 1;
         newList.insertAt(2, newList.head.value);
         newList.head = newList.head.next;
-      }
-      let increment = 0;
-      if (req.body.userInput == true) {
-        increment = 1;
       }
       User.findByIdAndUpdate(req.user.id, {$set: {"questions":newList}, $inc: {qTotal:1, qCorrect:increment}}, {new: true}).exec();
       return newList.head.value;
     })
     .then(result => {
-      console.log('RESULT', result);
-      console.log(req.body);
       if (result) {
         res.status(200).json(result);
       }
