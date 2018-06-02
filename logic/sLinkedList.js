@@ -465,4 +465,4 @@ findLast: returns the last node in the linked list
 
 }
 
-module.exports = LinkedList;
+module.exports = {LinkedList, size};

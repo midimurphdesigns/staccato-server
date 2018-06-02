@@ -8,7 +8,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 
-const singly = require('../logic/sLinkedList');
+const {LinkedList} = require('../logic/sLinkedList');
 
 //const baseQuestions = require('../assets/questions.json');
 
@@ -54,7 +54,7 @@ router.post('/users', (req, res) => {
     .then(hash => {
       console.log(hash);
       return Question.find().then(questions => {
-        let qList = new singly();
+        let qList = new LinkedList();
         questions.forEach(q => qList.insertLast(q));
         console.log(qList);
         return qList;
